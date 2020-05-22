@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="rate"
+            type="apps.basilisk.officialhryvniarate.adapter.RateItem" />
+
+        <variable
+            name="click"
+            type="apps.basilisk.officialhryvniarate.adapter.RateAdapter.OnClickListener" />
+
+        <import type="java.util.Locale" />
+
+        <import type="androidx.core.content.ContextCompat" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/rate_item_row_height"
+        android:layout_marginStart="0.5dp"
+        android:layout_marginTop="0.5dp"
+        android:layout_marginEnd="0.5dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:onClick="@{v -> click.onItemClick(v, rate)}">
+
+            <CheckBox
+                android:id="@+id/cb_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:button="@drawable/checkbox_favorite"
+                android:checked="@{rate.favorite}"
+                android:onClick="@{v -> click.onFavoriteIconClick(v, rate)}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_icon"
+                imageSrc="@{rate.codeLiteral}"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/round_shape"
+                android:contentDescription="@null"
+                android:elevation="2dp"
+                android:padding="1dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@drawable/flag_usd" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/text_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{rate.name}"
+                app:layout_constraintBottom_toTopOf="@+id/tv_code_digital"
+                app:layout_constraintEnd_toStartOf="@+id/tv_value"
+                app:layout_constraintStart_toEndOf="@+id/iv_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="Долар США USD" />
+
+            <TextView
+                android:id="@+id/tv_code_literal"
+                style="@style/text_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{rate.codeLiteral}"
+                app:layout_constraintStart_toEndOf="@+id/iv_icon"
+                app:layout_constraintTop_toTopOf="@+id/tv_code_digital"
+                tools:text="USD" />
+
+            <TextView
+                android:id="@+id/tv_code_digital"
+                style="@style/text_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@{String.format(`(#%1s)`, rate.codeDigital)}"
+                android:textColor="@color/secondary_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_code_literal"
+                app:layout_constraintTop_toBottomOf="@+id/tv_name"
+                tools:text="(#840)" />
+
+            <TextView
+                app:layout_constraintVertical_chainStyle="packed"
+                android:id="@+id/tv_value"
+                style="@style/text_value_big"
+                spanMessage="@{rate.value}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_difference"
+                app:layout_constraintEnd_toStartOf="@+id/cb_favorite"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="27.55" />
+
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/tv_difference"
+                style="@style/text_value_medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cb_favorite"
+                app:layout_constraintTop_toBottomOf="@+id/tv_value"
+                spanMessage="@{rate.difference}"
+                tools:text="-0.55" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

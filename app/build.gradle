@@ -1,0 +1,140 @@
+apply plugin: 'com.android.application'
+
+android {
+    def versionPropsFile = file('version.properties')
+    def versionBuildValue
+    def versionCodeValue
+    def timestamp = new Date().format('yyyyMMdd_HHmmss')
+
+    /* Setting default value for versionBuild which is the last incremented value stored in the file */
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        versionBuildValue = versionProps['VERSION_BUILD'].toInteger()
+        versionCodeValue = versionProps['VERSION_CODE'].toInteger()
+    } else {
+        throw new FileNotFoundException("Could not read version.properties!")
+    }
+    /* Wrapping inside a method avoids auto incrementing on every gradle task run. Now it runs only when we build apk*/
+    ext.incrementBuildNumber = {
+        if (versionPropsFile.canRead()) {
+            Properties versionProps = new Properties()
+            versionProps.load(new FileInputStream(versionPropsFile))
+            versionBuildValue = versionProps['VERSION_BUILD'].toInteger() + 1
+            versionProps['VERSION_BUILD'] = versionBuildValue.toString()
+            versionProps.store(versionPropsFile.newWriter(), null)
+        } else {
+            throw new FileNotFoundException("Could not read version.properties!")
+        }
+    }
+    ext.incrementCodeNumber = {
+        if (versionPropsFile.canRead()) {
+            Properties versionProps = new Properties()
+            versionProps.load(new FileInputStream(versionPropsFile))
+            versionCodeValue = versionProps['VERSION_CODE'].toInteger() + 1
+            versionProps['VERSION_CODE'] = versionCodeValue.toString()
+            versionProps.store(versionPropsFile.newWriter(), null)
+        } else {
+            throw new FileNotFoundException("Could not read version.properties!")
+        }
+    }
+
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "apps.basilisk.officialhryvniarate"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode versionCodeValue
+        versionName "0.9.$versionCodeValue.$versionBuildValue"
+        setProperty("archivesBaseName", "apps.basilisk.officialhryvniarate_$versionName"+"_$timestamp")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+        release {
+            debuggable false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            if (project.hasProperty("signing_configs.properties")
+                    && new File(project.property("signing_configs.properties")).exists()) {
+                Properties props = new Properties()
+                props.load(new FileInputStream(file(project.property("signing_configs.properties"))))
+
+                storeFile file(props['keystore'])
+                storePassword props['keystore.password']
+                keyAlias props['key.alias']
+                keyPassword props['key.password']
+
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
+        }
+    }
+
+    dataBinding {
+        enabled = true;
+    }
+
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+
+    // Hook to check if the release/debug task is among the tasks to be executed.
+    gradle.taskGraph.whenReady { taskGraph ->
+        if (taskGraph.hasTask(assembleDebug)) {  /* when run debug task */
+            incrementBuildNumber()
+        } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
+            incrementBuildNumber()
+            incrementCodeNumber()
+        }
+    }
+}
+
+dependencies {
+    def lifecycle_version = "2.2.0"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation "androidx.preference:preference:1.1.1"
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+/*
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
+*/
+
+    implementation 'com.google.android.gms:play-services-ads:19.1.0'
+    implementation 'com.android.billingclient:billing:2.2.0'
+}

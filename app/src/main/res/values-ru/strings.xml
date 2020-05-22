@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Официальные курсы гривны</string>
+    <string name="action_search">Поиск</string>
+    <string name="action_date_picker">Выбрать дату</string>
+    <string name="action_no_ads">Отключить рекламу</string>
+    <string name="action_about">О программе</string>
+    <string name="title_rate_on">Курсы на %1s</string>
+    <string name="msg_data_not_available">данные отсутствуют</string>
+    <string name="header_foreign_currencies">Иностранные валюты (%1d/%2d)</string>
+    <string name="header_favorites">Избранные (%1d/%2d)</string>
+    <string name="about_subtitle">реализация API НБУ</string>
+    <string name="about_version">v.%1s\n© 2020 by Basilisk</string>
+    <string name="about_agreement">Программа поставляется как есть. Никакая гарантия любого вида не предоставляется и не подразумевается.\n\nВы используете это программное обеспечение на свой собственный риск.\n\nАвтор не будет нести никакой ответственности за потерю данных, убытки, упущенные выгоды или любой другой вид потерь при использовании этого программного обеспечения.\n\nВ то же время Автор гарантирует, что при разработке программы им не были и не будут использованы какие-либо части программного кода, несущие деструктивные действия или собирающие информацию о пользователе без его ведома.</string>
+</resources>
